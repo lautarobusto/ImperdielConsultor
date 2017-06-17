@@ -21,11 +21,12 @@ import java.net.URL;
 public class Imper {
 
     public static void main(String args[]) throws IOException {
-        saveUrl();
-        decompress();
+        
+        //saveUrl();
+        //decompress();
         clearDB();
         loadDB();
-        //initializeGui();
+        initializeGui();
 
     }
 
@@ -94,6 +95,8 @@ public class Imper {
                     producto.setCodigoImp(arrayLines.get(j));
                     producto.setCodigoOrig(arrayLines.get(j + 2));
                     producto.setPrecio(Double.parseDouble(d));
+                    producto.setPrecioIva(Double.parseDouble(d));
+                    producto.setPrecioCosto(Double.parseDouble(d));
                     producto.setMarca(aux[0]);
                     producto.setRubro(aux[1]);
                     producto.setNombre(arrayLines.get(j + 1).replace(pre, ""));

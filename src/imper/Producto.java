@@ -10,12 +10,16 @@ package imper;
  * @author Lautaro
  */
 public class Producto {
+
     private String codigoImp;
     private String codigoOrig;
     private double precio;
+    private double precioIva;
+    private double precioCosto;
     private String marca;
     private String nombre;
     private String rubro;
+
     public Producto() {
     }
 
@@ -26,6 +30,23 @@ public class Producto {
         this.marca = marca;
         this.nombre = nombre;
         this.rubro = rubro;
+        
+    }
+
+    public double getPrecioIva() {
+        return precioIva;
+    }
+
+    public void setPrecioIva(double precioIva) {
+        this.precioIva = precioIva+precioIva * 0.21;
+    }
+
+    public double getPrecioCosto() {
+        return  precioCosto;
+    }
+
+    public void setPrecioCosto(double precioCosto) {
+        this.precioCosto = (precioCosto+precioCosto * 0.21) / 2;
     }
 
     public String getCodigoImp() {
@@ -75,5 +96,5 @@ public class Producto {
     public void setRubro(String rubro) {
         this.rubro = rubro;
     }
-    
+
 }

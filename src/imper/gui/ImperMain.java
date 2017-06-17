@@ -6,13 +6,11 @@
 package imper.gui;
 
 import imper.Conector;
-import java.io.File;
-import java.net.URL;
-import java.sql.Array;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
+
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -31,19 +29,20 @@ import javax.swing.table.TableRowSorter;
  * @author Lautaro
  */
 public class ImperMain extends javax.swing.JFrame {
-    
+
     public ImperMain() {
-        
+
         initComponents();
         myInitComponents();
         ImageIcon img = new ImageIcon("src\\imper\\gui\\gear2.png");
+
         setIconImage(img.getImage());
-        
+
     }
-    
+
     private static DefaultTableModel buildTableModel(ResultSet rs)
             throws SQLException {
-        
+
         ResultSetMetaData metaData = rs.getMetaData();
 
         // names of columns
@@ -62,18 +61,17 @@ public class ImperMain extends javax.swing.JFrame {
             }
             data.add(vector);
         }
-        
+
         return new DefaultTableModel(data, columnNames);
-        
+
     }
-    
+
     private void loadproductos() {
-        
+
         int rowa = tableMarca.getSelectedRow();
-        
+
         if (rowa >= 0) {
             int row = tableMarca.convertRowIndexToModel(rowa);
-            //String marca = tableMarca.getRowSorter().getModel().getValueAt(row, 0).toString();
             String marca = tableMarca.getModel().getValueAt(row, 0).toString();
             try {
                 tableProducto.setModel(buildTableModel(conector.getProdM(marca)));
@@ -82,13 +80,12 @@ public class ImperMain extends javax.swing.JFrame {
             }
         }
     }
-    
+
     private void loadProductosFields() throws SQLException {
         int rowa = tableProducto.getSelectedRow();
-        
+
         if (rowa >= 0) {
             int row = tableProducto.convertRowIndexToModel(rowa);
-            //String producto = tableProducto.getRowSorter().getModel().getValueAt(row, 0).toString();
             String producto = tableProducto.getModel().getValueAt(row, 0).toString();
             ResultSet rst = conector.getProd(producto);
             jTextFieldCodigoImp.setText(rst.getString("CodImperdiel"));
@@ -97,12 +94,12 @@ public class ImperMain extends javax.swing.JFrame {
             jTextFieldNombre.setText(rst.getString("Nombre"));
             jTextFieldRubro.setText(rst.getString("Rubro"));
             jFormattedTextFieldPrecio.setValue((Object) rst.getDouble("Precio"));
-            jFormattedTextFieldPrecio1.setValue((Object) (rst.getDouble("Precio") + ((rst.getDouble("Precio") * 21) / 100)));
-            jFormattedTextFieldPrecio2.setValue((Object) ((rst.getDouble("Precio") + ((rst.getDouble("Precio") * 21) / 100))/2));
+            jFormattedTextFieldPrecio1.setValue((Object) rst.getDouble("PrecioIva"));
+            jFormattedTextFieldPrecio2.setValue((Object) rst.getDouble("PrecioCosto"));
         }
-        
+
     }
-    
+
     private void myInitComponents() {
         tableMarca.setAutoCreateRowSorter(false);
         tableProducto.setAutoCreateRowSorter(false);
@@ -114,8 +111,13 @@ public class ImperMain extends javax.swing.JFrame {
             Logger.getLogger(ImperMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         tableMarca.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent event) {
                 loadproductos();
+                //Es sucio pero con esto "reinicio" el estado de la tableProducto, cada vex que selecciono otra marca
+                TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableProducto.getModel());
+                sorter.setRowFilter(null);
+                tableProducto.setRowSorter(sorter);
             }
         });
         tableProducto.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -127,7 +129,7 @@ public class ImperMain extends javax.swing.JFrame {
                 }
             }
         });
-        
+
     }
 
 
@@ -249,6 +251,14 @@ public class ImperMain extends javax.swing.JFrame {
         jPanel3.setMinimumSize(new java.awt.Dimension(440, 220));
         jPanel3.setName("Marca"); // NOI18N
 
+        tableProducto.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         jScrollPane4.setViewportView(tableProducto);
 
         jTextFieldProducto.setText("Producto...");
@@ -459,7 +469,7 @@ public class ImperMain extends javax.swing.JFrame {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
+                .addContainerGap(36, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(27, 27, 27))
         );
@@ -471,12 +481,12 @@ public class ImperMain extends javax.swing.JFrame {
             .addGroup(PrecioTabLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(PrecioTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(PrecioTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
                 .addContainerGap())
         );
         PrecioTabLayout.setVerticalGroup(
@@ -542,7 +552,7 @@ public class ImperMain extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldProductoFocusGained
 
     private void jTextFieldProductoInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextFieldProductoInputMethodTextChanged
-        
+
 
     }//GEN-LAST:event_jTextFieldProductoInputMethodTextChanged
 
@@ -556,7 +566,7 @@ public class ImperMain extends javax.swing.JFrame {
 
     private void jTextFieldProductoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldProductoKeyReleased
         TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableProducto.getModel());
-        
+
         String filter = jTextFieldProducto.getText().toUpperCase();
         if (filter.length() == 0) {
             sorter.setRowFilter(null);
@@ -572,20 +582,21 @@ public class ImperMain extends javax.swing.JFrame {
 
     private void jTextFieldMarcaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldMarcaKeyReleased
         TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableMarca.getModel());
-        
+
         String filter = jTextFieldMarca.getText().toUpperCase();
         if (filter.length() == 0) {
             sorter.setRowFilter(null);
         } else {
             sorter.setRowFilter(RowFilter.regexFilter(filter));
         }
-        tableMarca.setRowSorter(sorter);        // TODO add your handling code here:
+        tableMarca.setRowSorter(sorter);
+
+// TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldMarcaKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-        
-        
+
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -623,7 +634,7 @@ public class ImperMain extends javax.swing.JFrame {
                 new ImperMain().setVisible(true);
             }
         });
-        
+
     }
     private Conector conector = new Conector();
     // Variables declaration - do not modify//GEN-BEGIN:variables

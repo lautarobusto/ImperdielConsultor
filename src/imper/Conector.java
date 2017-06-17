@@ -20,13 +20,13 @@ public class Conector {
     //un prepared statement permite usar variables en la query que quiera hacer en la DB
     PreparedStatement insertSt, createSt;
 
-    public Conector() {
+    public  Conector() {
 
         //  System.out.println("Conectando.....");
         try {
 
             connect = DriverManager.getConnection("jdbc:sqlite:" + url);
-            insertSt = connect.prepareStatement("insert into Productos (CodImperdiel, CodOrigen ,Precio, Nombre, Marca, Rubro ) values (?,?,?,?,?,?)");
+            insertSt = connect.prepareStatement("insert into Productos (CodImperdiel, CodOrigen, Precio, PrecioIva, PrecioCosto, Nombre, Marca, Rubro) values (?,?,?,?,?,?,?,?)");
             if (connect != null) {
                 //  System.out.println("Conectado");
             }
@@ -38,11 +38,29 @@ public class Conector {
         //System.out.println("Opened database successfully");
     }
 
+    /**public void ConectorEsp() {
+
+        //  System.out.println("Conectando.....");
+        try {
+
+            connect = DriverManager.getConnection("jdbc:sqlite:" + url);
+            insertSt = connect.prepareStatement("insert into Productos (CodImperdiel, CodOrigen, Precio, PrecioIva, PrecioCosto, Nombre, Marca, Rubro) values (?,?,?,?,?,?,?,?)");
+            if (connect != null) {
+                //  System.out.println("Conectado");
+            }
+        } catch (SQLException ex) {
+
+            System.out.println("No se ha podido conectar a la base de datos \n" + ex.getMessage());
+
+        }
+        //System.out.println("Opened database successfully");
+    }**/
+
     public void dropAndCreateDB() {
         try {
             PreparedStatement st = this.connect.prepareStatement("DROP TABLE IF EXISTS Productos");
             st.execute();
-            st = connect.prepareStatement("CREATE TABLE `Productos` ( `Id` INTEGER, `CodImperdiel` TEXT, `CodOrigen` TEXT, `Precio` REAL,`Nombre` TEXT, `Marca` TEXT, `Rubro` TEXT, PRIMARY KEY(`Id`) )");
+            st = connect.prepareStatement("CREATE TABLE `Productos` ( `Id` INTEGER, `CodImperdiel` TEXT, `CodOrigen` TEXT, `Precio` REAL, `PrecioIva` REAL, `PrecioCosto` REAL,`Nombre` TEXT, `Marca` TEXT, `Rubro` TEXT, PRIMARY KEY(`Id`) )");
             st.execute();
 
         } catch (SQLException ex) {
@@ -51,6 +69,19 @@ public class Conector {
         }
     }
 
+    /**
+     * public void dropAndCreateDB() { try { PreparedStatement st =
+     * this.connect.prepareStatement("DROP TABLE IF EXISTS Productos");
+     * st.execute(); st = connect.prepareStatement("CREATE TABLE `Productos` (
+     * `Id` INTEGER, `CodImperdiel` TEXT, `CodOrigen` TEXT, `Precio`
+     * REAL,`Nombre` TEXT, `Marca` TEXT, `Rubro` TEXT, PRIMARY KEY(`Id`) )");
+     * st.execute();
+     *
+     * } catch (SQLException ex) { System.out.println(ex.getMessage());
+     *
+     * }
+     * }
+     */
     /**
      * metodo para cerrar la conecion a la db
      */
@@ -68,9 +99,11 @@ public class Conector {
             this.insertSt.setString(1, x.getCodigoImp());
             this.insertSt.setString(2, x.getCodigoOrig());
             this.insertSt.setDouble(3, x.getPrecio());
-            this.insertSt.setString(4, x.getNombre());
-            this.insertSt.setString(5, x.getMarca());
-            this.insertSt.setString(6, x.getRubro());
+            this.insertSt.setDouble(4, x.getPrecioIva());
+            this.insertSt.setDouble(5, x.getPrecioCosto());
+            this.insertSt.setString(6, x.getNombre());
+            this.insertSt.setString(7, x.getMarca());
+            this.insertSt.setString(8, x.getRubro());
             this.insertSt.addBatch();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -125,10 +158,11 @@ public class Conector {
         return null;
 
     }
-        public ResultSet getProd(String n) {
+
+    public ResultSet getProd(String n) {
         try {
             Statement stmt = connect.createStatement();
-            String str = "select * from Productos where nombre="+ "'" + n + "'";
+            String str = "select * from Productos where nombre=" + "'" + n + "'";
             ResultSet rst = stmt.executeQuery(str);
             return rst;
         } catch (SQLException ex) {
