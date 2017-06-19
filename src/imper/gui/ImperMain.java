@@ -6,6 +6,7 @@
 package imper.gui;
 
 import imper.Conector;
+import java.io.IOException;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -129,6 +131,28 @@ public class ImperMain extends javax.swing.JFrame {
                 }
             }
         });
+
+    }
+
+    private void update() {
+
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                try {
+                    imper.Imper.saveUrl();
+                    imper.Imper.decompress();
+                    imper.Imper.clearDB();
+                    imper.Imper.loadDB();
+                    myInitComponents();
+                } catch (IOException ex) {
+                    Logger.getLogger(ImperMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return null;
+
+            }
+        }.execute();
 
     }
 
@@ -595,7 +619,7 @@ public class ImperMain extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldMarcaKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+        update();
 
     }//GEN-LAST:event_jButton2ActionPerformed
 

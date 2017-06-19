@@ -17,16 +17,19 @@ import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class Imper {
 
     public static void main(String args[]) throws IOException {
 
         //saveUrl();
-       //decompress();
-       //clearDB();
-       //loadDB();
-       initializeGui();
+        //decompress();
+        //clearDB();
+        //loadDB();
+        initializeGui();
 
     }
 
@@ -140,6 +143,7 @@ public class Imper {
 
     public static void saveUrl()
             throws MalformedURLException, IOException {
+
         String urlString = "http://imperdielriocuarto.com.ar/listaprecios/ListadePrecios.exe";
         String filename = "Update/setup.exe";
         File dir = new File("Update");
@@ -166,7 +170,7 @@ public class Imper {
 
     }
 
-    private static void decompress() {
+    public static void decompress() {
         try {
             //System.out.println("Inicio del Programa");
             Process p = Runtime.getRuntime().exec("run.bat");
