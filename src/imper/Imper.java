@@ -22,11 +22,11 @@ public class Imper {
 
     public static void main(String args[]) throws IOException {
 
-       // saveUrl();
-       // decompress();
-       // clearDB();
-        //loadDB();
-        initializeGui();
+        //saveUrl();
+       //decompress();
+       //clearDB();
+       //loadDB();
+       initializeGui();
 
     }
 
@@ -52,12 +52,14 @@ public class Imper {
         frm.setVisible(true);
     }
 
-    public static void clearDB() {
+    public static void clearDB() throws IOException {
         Conector con = new Conector();
         con.dropAndCreateDB();
     }
 
-    public static void loadDB() {
+    public static void loadDB() throws IOException {
+        File setup = new File("Update/setup.exe");
+        setup.delete();
         Conector con = new Conector();
         String line;
         ArrayList<String> arrayLines = new ArrayList<String>();
@@ -85,7 +87,7 @@ public class Imper {
 
         File folder = new File("Update/BaseDatos/");
         File[] listOfFiles = folder.listFiles();
-       
+
         for (File file : listOfFiles) {
             if (marrayLines.contains(file.getName())) {
 
@@ -130,6 +132,7 @@ public class Imper {
 
                 }
             }
+            file.delete();
         }
         con.commit();
 
@@ -160,6 +163,7 @@ public class Imper {
                 fout.close();
             }
         }
+
     }
 
     private static void decompress() {
@@ -176,7 +180,8 @@ public class Imper {
                     //System.out.println("El programa aun no finaliza");
                 }
             }
-            // System.out.println("El programa finalizo");
+            System.out.println("El programa finalizo");
+
 
             /*Inicio de las acciones que siguen a la finalizacion del exe*/
         } catch (IOException e) {

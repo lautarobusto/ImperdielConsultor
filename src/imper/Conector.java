@@ -1,5 +1,9 @@
 package imper;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,8 +24,7 @@ public class Conector {
     //un prepared statement permite usar variables en la query que quiera hacer en la DB
     PreparedStatement insertSt, createSt;
 
-    public  Conector() {
-
+    public Conector() {
         //  System.out.println("Conectando.....");
         try {
 
@@ -38,24 +41,23 @@ public class Conector {
         //System.out.println("Opened database successfully");
     }
 
-    /**public void ConectorEsp() {
-
-        //  System.out.println("Conectando.....");
-        try {
-
-            connect = DriverManager.getConnection("jdbc:sqlite:" + url);
-            insertSt = connect.prepareStatement("insert into Productos (CodImperdiel, CodOrigen, Precio, PrecioIva, PrecioCosto, Nombre, Marca, Rubro) values (?,?,?,?,?,?,?,?)");
-            if (connect != null) {
-                //  System.out.println("Conectado");
-            }
-        } catch (SQLException ex) {
-
-            System.out.println("No se ha podido conectar a la base de datos \n" + ex.getMessage());
-
-        }
-        //System.out.println("Opened database successfully");
-    }**/
-
+    /**
+     * public void ConectorEsp() {
+     *
+     * // System.out.println("Conectando....."); try {
+     *
+     * connect = DriverManager.getConnection("jdbc:sqlite:" + url); insertSt =
+     * connect.prepareStatement("insert into Productos (CodImperdiel, CodOrigen,
+     * Precio, PrecioIva, PrecioCosto, Nombre, Marca, Rubro) values
+     * (?,?,?,?,?,?,?,?)"); if (connect != null) { //
+     * System.out.println("Conectado"); } } catch (SQLException ex) {
+     *
+     * System.out.println("No se ha podido conectar a la base de datos \n" +
+     * ex.getMessage());
+     *
+     * }
+     * //System.out.println("Opened database successfully"); }*
+     */
     public void dropAndCreateDB() {
         try {
             PreparedStatement st = this.connect.prepareStatement("DROP TABLE IF EXISTS Productos");
