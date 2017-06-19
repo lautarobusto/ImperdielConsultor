@@ -21,11 +21,11 @@ import java.net.URL;
 public class Imper {
 
     public static void main(String args[]) throws IOException {
-        
-        //saveUrl();
-        //decompress();
-        clearDB();
-        loadDB();
+
+       // saveUrl();
+       // decompress();
+       // clearDB();
+        //loadDB();
         initializeGui();
 
     }
@@ -61,53 +61,78 @@ public class Imper {
         Conector con = new Conector();
         String line;
         ArrayList<String> arrayLines = new ArrayList<String>();
-        File folder = new File("Update/BaseDatos/");
-        File[] listOfFiles = folder.listFiles();
-        for (File file : listOfFiles) {
-            arrayLines.removeAll(arrayLines);
-            if (file.isFile() && !file.getName().endsWith(".txt")) {
-                try (
-                        InputStream fis = new FileInputStream(file.getPath());
-                        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("cp1252"));
-                        BufferedReader br = new BufferedReader(isr);) {
 
-                    while ((line = br.readLine()) != null) {
-                        arrayLines.add(line);
-
-                    }
-
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(Imper.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Imper.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                for (int j = 0; j < arrayLines.size(); j = j + 5) {
-                    Producto producto = new Producto();
-                    String aux[];
-
-                    String d = arrayLines.get(j + 3);
-                    d = d.replace(",", ".");
-                    d = d.replaceAll("\\s", "");
-                    aux = arrayLines.get(j + 4).split("/");
-                    String pre = " " + aux[0];
-
-                    producto.setCodigoImp(arrayLines.get(j));
-                    producto.setCodigoOrig(arrayLines.get(j + 2));
-                    producto.setPrecio(Double.parseDouble(d));
-                    producto.setPrecioIva(Double.parseDouble(d));
-                    producto.setPrecioCosto(Double.parseDouble(d));
-                    producto.setMarca(aux[0]);
-                    producto.setRubro(aux[1]);
-                    producto.setNombre(arrayLines.get(j + 1).replace(pre, ""));
-                    con.saveProducto(producto);
-
-                }
+        /**
+         * A continuacion agregue un chequeo en el archivo marcas.txt que
+         * contiene las marcas usadas en el programam original, supongo que
+         * imperdiel toma sus marcas de ahi a pesar de incluir el doble de
+         * archivos en la carpeta BaseDatos.
+         */
+        ArrayList<String> marrayLines = new ArrayList<String>();
+        try (InputStream mis = new FileInputStream("Update/BaseDatos/marca.txt");
+                InputStreamReader isr = new InputStreamReader(mis, Charset.forName("cp1252"));
+                BufferedReader mbr = new BufferedReader(isr);) {
+            while ((line = mbr.readLine()) != null) {
+                marrayLines.add(line);
 
             }
 
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Imper.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Imper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        File folder = new File("Update/BaseDatos/");
+        File[] listOfFiles = folder.listFiles();
+       
+        for (File file : listOfFiles) {
+            if (marrayLines.contains(file.getName())) {
+
+                arrayLines.removeAll(arrayLines);
+                if (file.isFile() && !file.getName().endsWith(".txt")) {
+                    try (
+                            InputStream fis = new FileInputStream(file.getPath());
+                            InputStreamReader isr = new InputStreamReader(fis, Charset.forName("cp1252"));
+                            BufferedReader br = new BufferedReader(isr);) {
+
+                        while ((line = br.readLine()) != null) {
+                            arrayLines.add(line);
+
+                        }
+
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(Imper.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Imper.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    for (int j = 0; j < arrayLines.size(); j = j + 5) {
+                        Producto producto = new Producto();
+                        String aux[];
+
+                        String d = arrayLines.get(j + 3);
+                        d = d.replace(",", ".");
+                        d = d.replaceAll("\\s", "");
+                        aux = arrayLines.get(j + 4).split("/");
+                        String pre = " " + aux[0];
+                        producto.setCodigoImp(arrayLines.get(j));
+                        producto.setCodigoOrig(arrayLines.get(j + 2));
+                        producto.setPrecio(Double.parseDouble(d));
+                        producto.setPrecioIva(Double.parseDouble(d));
+                        producto.setPrecioCosto(Double.parseDouble(d));
+                        producto.setMarca(aux[0]);
+                        producto.setRubro(aux[1]);
+                        producto.setNombre(arrayLines.get(j + 1).replace(pre, ""));
+                        con.saveProducto(producto);
+
+                    }
+
+                }
+            }
         }
         con.commit();
+
     }
 
     public static void saveUrl()
